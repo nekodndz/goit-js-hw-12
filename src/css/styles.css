@@ -5,21 +5,134 @@
   |============================
 */
 @import url('./reset.css');
-@import url('./vite-promo.css');
-@import url('./header.css');
 
-:root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.search-form {
+  display: flex;
+  gap: 8px;
+opacity: 0px;
+width: 100%;
+justify-content: center;
+padding: 36px 0; 
+}
+
+.search-input {
+  width: 272px;
+height: 40px;
+border-radius: 4px;
+opacity: 0px;
+border: 1px solid #808080;
+padding-left: 8px;
+}
+
+.search-input:hover {
+  border: 1px solid #000000;
+}
+
+.search-input:focus {
+  border: 1px solid #4E75FF;
+  outline: none;
+}
+
+.search-btn {
+  width: 75px;
+height: 40px;
+border-radius: 8px;
+opacity: 0px;
+background: #4E75FF;
+border: none;
+color: #FFFFFF;
+}
+
+.search-input, .search-btn {
+  box-sizing: border-box; 
+  vertical-align: middle; 
+}
+
+.search-btn:hover {
+  background: #6C8CFF;
+}
+
+.gallery-item{
+  width: calc((100% - 54px) / 3);
+  height: auto;
+  gap: 0px;
+  border: 1px solid #808080;
+  opacity: 0px;
+}
+
+.gallery-link {
+  display: block;
+}
+
+.gallery-image {
+  display: block;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.thumb-block {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 20px;
+}
+
+.block {
+  margin-bottom: 10px;
+}
+
+.tittle {
   font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
+  margin-bottom: 5px;
+  text-align: center;
+}
 
-  color: #242424;
-  background-color: rgba(255, 255, 255, 0.87);
+.amount {
+  font-size: 14px;
+  margin: 0;
+  text-align: center;
+}
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 0px 120px;
+}
+
+.gallery-div {
+  padding-top: 32px;
+}
+
+.load-btn {
+  width: 125px;
+height: 40px;
+gap: 0px;
+opacity: 0px;
+border-radius: 8px;
+background: #4E75FF;
+border: none;
+color: #FFFFFF;
+}
+
+.load-btn:hover {
+  background: #6C8CFF;
+}
+
+.load-btn-wrap {
+  display: flex;
+  justify-content: center;
+padding: 24px 0; 
 }

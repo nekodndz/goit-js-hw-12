@@ -26,9 +26,7 @@ endLoader.style.display = 'none';
 formSearch.addEventListener('submit', onSearch);
 btnLoader.addEventListener('click', onLoadMore);
 
-
-
-function onSearch(event) {
+async function onSearch(event) {
   event.preventDefault();
 
   currentPage = 1;
@@ -36,9 +34,6 @@ function onSearch(event) {
   loader.style.display = 'block';
   btnLoader.style.display = 'none';
   endLoader.style.display = 'none';
-
-  const getHeightImgCard = () =>
-    document.querySelector('.gallery-item').getBoundingClientRect();
 
   inputSearch = event.target.elements.search.value.trim();
 
@@ -53,94 +48,90 @@ function onSearch(event) {
     return;
   }
 
-  getPictures(inputSearch, currentPage)
-    .then(({ data }) => {
-      loader.style.display = 'none';
+  try {
+    const { data } = await getPictures(inputSearch, currentPage);
 
-      const totalPages = Math.ceil(data.totalHits / perPage);
+    loader.style.display = 'none';
 
-      if (currentPage === totalPages) {
-        btnLoader.style.display = 'none';
-        endLoader.style.display = 'block';
-      } else {
-        btnLoader.style.display = 'block';
-      }
+    const totalPages = Math.ceil(data.totalHits / perPage);
 
-      if (!data.hits.length) {
-        iziToast.error({
-          title: 'Error',
-          message:
-            'Sorry, there are no images matching your search query. Please try again!',
-          position: 'topRight',
-          close: false,
-        });
-        return;
-      }
+    if (currentPage === totalPages) {
+      btnLoader.style.display = 'none';
+      endLoader.style.display = 'block';
+    } else {
+      btnLoader.style.display = 'block';
+    }
 
-      listImages.insertAdjacentHTML('beforeend', createMarkup(data.hits));
+    if (!data.hits.length) {
+      iziToast.error({
+        title: 'Error',
+        message: 'Sorry, there are no images matching your search query. Please try again!',
+        position: 'topRight',
+        close: false,
+      });
 
-      simpleLightboxExem = new SimpleLightbox('.gallery a', {
-        captions: true,
-        captionsData: 'alt',
-        captionDelay: 250,
-      }).refresh();
+      btnLoader.style.display = 'none';
+      loaderMore.style.display = 'none';
+      endLoader.style.display = 'block';
 
-      formSearch.reset();
-    })
-    .catch(error => {
-      loader.style.display = 'none';
-      console.log(error);
-    });
+      return;
+    }
+
+    listImages.insertAdjacentHTML('beforeend', createMarkup(data.hits));
+
+    simpleLightboxExem = new SimpleLightbox('.gallery a', {
+      captions: true,
+      captionsData: 'alt',
+      captionDelay: 250,
+    }).refresh();
+
+    formSearch.reset();
+  } catch (error) {
+    loader.style.display = 'none';
+    console.log(error);
+  }
 }
 
-function onLoadMore() {
+async function onLoadMore() {
   currentPage += 1;
 
   loaderMore.style.display = 'block';
   btnLoader.style.display = 'none';
   endLoader.style.display = 'none';
 
-  const getHeightImgCard = () =>
-    document.querySelector('.gallery-item').getBoundingClientRect();
+  try {
+    const { data } = await getPictures(inputSearch, currentPage);
 
-  getPictures(inputSearch, currentPage)
-    .then(({ data }) => {
-      listImages.insertAdjacentHTML('beforeend', createMarkup(data.hits));
+    listImages.insertAdjacentHTML('beforeend', createMarkup(data.hits));
 
-      window.scrollBy({
-        top: getHeightImgCard().height * 2,
-        left: 0,
-        behavior: 'smooth',
+    window.scrollBy({
+      top: listImages.lastElementChild.getBoundingClientRect().height * 2,
+      left: 0,
+      behavior: 'smooth',
+    });
+
+    simpleLightboxExem.refresh();
+
+    const totalPages = Math.ceil(data.totalHits / perPage);
+
+    if (currentPage === totalPages) {
+      iziToast.info({
+        title: 'Caution',
+        message: `We're sorry, but you've reached the end of search results.`,
+        position: 'topRight',
+        close: false,
       });
 
-      simpleLightboxExem.refresh();
-
-      const totalPages = Math.ceil(data.totalHits / perPage);
-
-      if (currentPage === totalPages) {
-        iziToast.info({
-          title: 'Caution',
-          message: `We're sorry, but you've reached the end of search results.`,
-          position: 'topRight',
-          close: false,
-        });
-
-        btnLoader.style.display = 'none';
-        loaderMore.style.display = 'none';
-        endLoader.style.display = 'block';
-
-        return;
-      }
-
+      btnLoader.style.display = 'none';
       loaderMore.style.display = 'none';
-      btnLoader.style.display = 'block';
-      smoothScrollTo(listImages);
-    })
-    .catch(error => console.log(error));
-}
+      endLoader.style.display = 'block';
 
-function smoothScrollTo(element) {
-  const cardHeight = element.firstElementChild.getBoundingClientRect().height;
-  const scrollDistance = cardHeight * 2;
-  window.scrollBy({ top: scrollDistance, behavior: 'smooth' });
+      return;
+    }
+
+    loaderMore.style.display = 'none';
+    btnLoader.style.display = 'block';
+  } catch (error) {
+    console.log(error);
+  }
 }
